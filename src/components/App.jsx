@@ -3,19 +3,40 @@ import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
+import {
+  saveContactsToLocalStorage,
+  loadContactsFromLocalStorage,
+} from './localStorageUtils/localStorageUtils';
 
 class App extends Component {
+  // state = {
+  //   contacts: [
+  //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  //     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  //   ],
+  //   filter: '',
+  //   name: '',
+  //   number: '',
+  // };
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
     name: '',
     number: '',
   };
+
+  componentDidMount() {
+    const savedContacts = loadContactsFromLocalStorage();
+    this.setState({ contacts: savedContacts });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      saveContactsToLocalStorage(this.state.contacts);
+    }
+  }
 
   handleAddContact = newContact => {
     const { contacts } = this.state;
